@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import LottieAnimation from "@/components/AnimatedIcons";
+import Link from "next/link";
 
 export default function page() {
   const searchParams = useSearchParams();
@@ -47,7 +48,7 @@ export default function page() {
   }, [token]);
 
   return (
-    <>
+    <div className="mt-10">
       <div className="flex flex-col gap-5 items-center">
         {message.status === "success" && (
           <div>
@@ -76,7 +77,12 @@ export default function page() {
             }}></span>
         )}
         <h1 className="text-3xl text-center">{message.message}</h1>
+        {message.status === "success" && (
+          <Link className="btn btn-primary" href="/">
+            Asosiy sahifaga qaytish
+          </Link>
+        )}
       </div>
-    </>
+    </div>
   );
 }
