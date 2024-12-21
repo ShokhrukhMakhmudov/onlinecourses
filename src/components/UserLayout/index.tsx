@@ -1,4 +1,5 @@
 "use client";
+import { Suspense } from "react";
 import { ReactNode } from "react";
 import Header from "../Header";
 import { usePathname } from "next/navigation";
@@ -16,7 +17,7 @@ export default function UserLayout({ children }: { children: ReactNode }) {
           {children}
         </>
       ) : (
-        <>{children}</>
+        <Suspense>{children}</Suspense>
       )}
     </>
   );
