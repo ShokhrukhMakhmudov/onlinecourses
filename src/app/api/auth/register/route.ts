@@ -7,7 +7,7 @@ import { User } from "../../../../../models";
 
 export async function POST(req: Request) {
   await connectMongoDb();
-
+  let userId = null;
   const { fullName, email, password, phoneNumber, dateOfBirth, gender } =
     await req.json();
 
@@ -21,6 +21,7 @@ export async function POST(req: Request) {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+
     const newUser = await User.create({
       fullName,
       email,
@@ -30,6 +31,7 @@ export async function POST(req: Request) {
       gender,
       isVerified: false,
     });
+    userId = newUser._id.toString();
 
     const token = jwt.sign(
       { userId: newUser._id.toString() },
@@ -49,7 +51,7 @@ export async function POST(req: Request) {
       from: process.env.EMAIL_USER,
       to: email,
       subject: "E-mailni tasdiqlash",
-      html: `<h2>Assalomu alaykum, ${existingUser.fullName}!</h2>
+      html: `<h2>Assalomu alaykum, ${newUser.fullName}!</h2>
                  <p>E-mailingizni tasdiqlash uchun linkni bosing:</p>
                  <a href="${process.env.BASE_URL}/auth?token=${token}">Tasdiqlash</a>`,
     };
@@ -64,6 +66,7 @@ export async function POST(req: Request) {
       { status: 201 }
     );
   } catch (error) {
+    await User.findByIdAndDelete(userId);
     return NextResponse.json(
       { message: "Serverda xatolik!", error },
       { status: 500 }
