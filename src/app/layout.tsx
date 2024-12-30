@@ -18,6 +18,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="uz">
+      <head>
+        <link
+          href="https://unpkg.com/video.js@7/dist/video-js.min.css"
+          rel="stylesheet"
+        />
+
+        <link
+          href="https://unpkg.com/@videojs/themes@1/dist/city/index.css"
+          rel="stylesheet"
+        />
+      </head>
       <body className={`${font.className} antialiased`}>
         <UserLayout>{children}</UserLayout>
       </body>

@@ -1,4 +1,4 @@
-import { IUser } from "@/types";
+import { IUser, IAdmin } from "@/types";
 import { Schema, model, models } from "mongoose";
 
 const UserSchema = new Schema<IUser>(
@@ -17,4 +17,11 @@ const UserSchema = new Schema<IUser>(
   { timestamps: true }
 );
 
+const AdminSchema = new Schema<IAdmin>({
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+});
+
 export const User = models.User || model<IUser>("User", UserSchema);
+
+export const Admin = models.Admin || model<IAdmin>("Admin", AdminSchema);

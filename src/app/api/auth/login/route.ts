@@ -32,7 +32,7 @@ export async function POST(req: Request) {
         const token = jwt.sign(
           { userId: existingUser._id.toString() },
           process.env.JWT_SECRET as string,
-          { expiresIn: "1h" }
+          { expiresIn: "2h" }
         );
         return NextResponse.json(
           { message: "Siz tizimga muvofaqiyatli kirdingiz!", token },

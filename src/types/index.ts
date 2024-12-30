@@ -13,10 +13,21 @@ export interface IUser extends Document {
   createdAt: Date;
 }
 
+export interface IAdmin extends Document {
+  email: string;
+  password: string;
+}
+
 export interface LottieAnimationProps {
   type?: "success" | "error";
   loop?: boolean;
   autoplay?: boolean;
   className?: string;
   style?: React.CSSProperties;
+}
+
+export interface NavLinkProps {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
 }

@@ -11,6 +11,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.7",
+    "fluent-ffmpeg": "^2.1.3",
     "flyonui": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
     "lottie-react": "^2.4.0",
@@ -19,10 +20,12 @@
     "nodemailer": "^6.9.16",
     "react": "^18",
     "react-dom": "^18",
-    "swiper": "^11.1.15"
+    "swiper": "^11.1.15",
+    "video.js": "^8.21.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
+    "@types/fluent-ffmpeg": "^2.1.27",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20.17.10",
     "@types/nodemailer": "^6.4.17",

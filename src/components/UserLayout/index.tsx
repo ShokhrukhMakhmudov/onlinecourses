@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 export default function UserLayout({ children }: { children: ReactNode }) {
   const path = usePathname();
 
-  const showHeader = !path.includes("auth");
+  const showHeader = !path.includes("auth") && !path.includes("admin");
 
   return (
     <>
