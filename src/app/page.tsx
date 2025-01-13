@@ -6,7 +6,10 @@ const getCourses = unstable_cache(
   async () => {
     try {
       const req = await fetch(
-        process.env.NEXT_PUBLIC_BASE_URL + "/api/course/get?status=active"
+        process.env.NEXT_PUBLIC_BASE_URL + "/api/course/get?status=active",
+        {
+          method: "GET",
+        }
       );
       const res = await req.json();
 

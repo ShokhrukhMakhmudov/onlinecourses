@@ -5,7 +5,7 @@ import connectMongoDb from "../../../../../utils";
 export async function GET(req: Request) {
   await connectMongoDb();
 
-  const { searchParams } = new URL(req.url);
+  const { searchParams } = new URL(req?.url);
   const id = searchParams?.get("id");
   const status = searchParams?.get("status");
 
@@ -23,6 +23,6 @@ export async function GET(req: Request) {
     const courses = await Course.find({});
     return NextResponse.json({ courses, success: true }, { status: 200 });
   } catch (error) {
-    return NextResponse.json(error, { status: 400 });
+    return NextResponse.json({ error }, { status: 400 });
   }
 }
