@@ -13,6 +13,16 @@ export interface IUser extends Document {
   createdAt: Date;
 }
 
+export interface ICourse extends Document {
+  title: string;
+  author: string;
+  description: string;
+  price: number;
+  newPrice: number | "";
+  language: "uz" | "ru" | "en";
+  cover: string;
+  status: boolean;
+}
 export interface IAdmin extends Document {
   email: string;
   password: string;

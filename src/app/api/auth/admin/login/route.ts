@@ -10,9 +10,9 @@ export async function POST(req: Request) {
   const { email, password } = await req.json();
 
   try {
-    const existingUser = await Admin.findOne({ email });
+    const existingAdmin = await Admin.findOne({ email });
 
-    if (!existingUser) {
+    if (!existingAdmin) {
       return NextResponse.json(
         {
           message: "Bunday foydalanuvchi mavjud emas!",
@@ -23,12 +23,12 @@ export async function POST(req: Request) {
 
     const hashedPassword = await bcrypt.compare(
       password,
-      existingUser.password
+      existingAdmin.password
     );
 
     if (hashedPassword) {
       const token = jwt.sign(
-        { userId: existingUser._id.toString() },
+        { adminId: existingAdmin._id.toString() },
         process.env.JWT_SECRET as string,
         { expiresIn: "4h" }
       );

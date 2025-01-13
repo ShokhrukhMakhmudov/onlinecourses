@@ -12,7 +12,7 @@ export async function POST(req: Request) {
 
   try {
     const existingUser = await User.findOne({ email });
-    console.log(existingUser);
+
     if (!existingUser) {
       return NextResponse.json(
         {
@@ -32,10 +32,14 @@ export async function POST(req: Request) {
         const token = jwt.sign(
           { userId: existingUser._id.toString() },
           process.env.JWT_SECRET as string,
-          { expiresIn: "2h" }
+          { expiresIn: "4h" }
         );
         return NextResponse.json(
-          { message: "Siz tizimga muvofaqiyatli kirdingiz!", token },
+          {
+            message: "Siz tizimga muvofaqiyatli kirdingiz!",
+            token,
+            user: existingUser,
+          },
           { status: 200 }
         );
       }

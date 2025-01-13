@@ -2,7 +2,7 @@
 import { NavLinkProps } from "@/types";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 
 function NavLink({ href, children, className }: NavLinkProps) {
   const pathname = usePathname();
@@ -18,6 +18,29 @@ function NavLink({ href, children, className }: NavLinkProps) {
 }
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
+  useEffect(() => {
+    async function checkToken(token: string) {
+      const req = await fetch("/api/auth/admin/token", {
+        method: "POST",
+        body: JSON.stringify({ token: token }),
+      });
+      const res = await req.json();
+
+      if (!res?.success) {
+        window.location.href = "/admin/login";
+      }
+    }
+
+    const token = sessionStorage.getItem("token");
+
+    if (token) {
+      checkToken(token);
+    }
+
+    if (!token) {
+      window.location.href = "/admin/login";
+    }
+  }, []);
   return (
     <>
       <nav className="navbar bg-base-100 max-sm:rounded-box max-sm:shadow sm:border-b border-base-content/25 sm:z-[1] relative">
@@ -252,22 +275,22 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         <div className="drawer-body px-2 pt-4 shadow-xl bg-base-100">
           <ul className="menu p-0">
             <li>
-              <NavLink href="/admin/dashboard" className="active">
+              <NavLink href="/admin/dashboard">
                 <span className="icon-[tabler--home] size-5" />
                 Bosh sahifa
               </NavLink>
             </li>
             <li>
-              <a href="#">
+              <NavLink href="/admin/dashboard/users">
                 <span className="icon-[tabler--user] size-5" />
                 Foydalanuvchilar
-              </a>
+              </NavLink>
             </li>
             <li>
-              <a href="#">
+              <NavLink href="/admin/dashboard/courses">
                 <span className="icon-[tabler--message] size-5" />
                 Kurslar
-              </a>
+              </NavLink>
             </li>
             {/* <li>
               <a href="#">
@@ -302,7 +325,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           </ul>
         </div>
       </aside>
-      <div className="fixed bottom-[0] left-[0] sm:left-[256px] top-[64px] right-[0] z-[-1] flex-grow-[1] bg-gray-300 p-4">
+      <div className="fixed bottom-[0] left-[0] sm:left-[256px] top-[64px] right-[0] z-[1] flex-grow-[1] bg-gray-300 p-4">
         {children}
       </div>
     </>

@@ -28,7 +28,7 @@ export default function page() {
 
     const data = await response.json();
     if (response.status === 200) {
-      localStorage.setItem("token", data.token);
+      sessionStorage.setItem("token", data.token);
       window.location.href = "/admin/dashboard";
     } else {
       setLogin((prev) => ({

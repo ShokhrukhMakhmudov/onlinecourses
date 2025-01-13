@@ -1,11 +1,18 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import AuthModal from "../AuthModal";
 import { IUser } from "@/types";
+import { useModal } from "@/context/AuthModalContext";
+import { useUserStatus } from "@/context/UserContext";
 
 export default function Header() {
-  const [user, setUser] = useState<IUser | null>(null);
+  const { openModal } = useModal();
+  const {
+    userStatus: { userData: user },
+    login,
+    logOut,
+  } = useUserStatus();
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,19 +28,18 @@ export default function Header() {
 
         const data = await response.json();
         if (response.status === 200) {
-          setUser(data.user);
+          login(data.user, token as string);
         } else {
           throw new Error(data.message);
         }
       } catch (error) {
-        localStorage.removeItem("token");
-        setUser(null);
+        logOut();
       } finally {
         setLoading(false);
       }
     }
 
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("userToken");
 
     if (!token) {
       return setLoading(false);
@@ -41,11 +47,6 @@ export default function Header() {
 
     checkToken();
   }, []);
-
-  function handleLogout() {
-    localStorage.removeItem("token");
-    window.location.reload();
-  }
 
   return (
     <header className="shadow-lg">
@@ -82,12 +83,14 @@ export default function Header() {
             {loading ? (
               <span className="loading loading-spinner loading-lg text-primary" />
             ) : (
-              <AuthModal
-                content="Kirish"
+              <button
+                type="button"
                 className={`${
                   user?._id ? "hidden" : ""
                 } btn btn-primary btn-soft`}
-              />
+                onClick={openModal}>
+                Kirish
+              </button>
             )}
             <div
               className={`${
@@ -100,7 +103,7 @@ export default function Header() {
                   </span>
                 )}
                 <Link
-                  href="#" // /cart
+                  href="/profile/cart"
                   className="btn btn-primary btn-outline btn-square"
                   aria-label="Button Indicator">
                   <span className="icon-[tabler--shopping-bag] size-5" />
@@ -146,21 +149,21 @@ export default function Header() {
                   </li>
                   <li>
                     <a className="dropdown-item" href="#">
-                      My Profile
+                      Shaxsiy kabinet
                     </a>
                   </li>
                   <li>
                     <a className="dropdown-item" href="#">
-                      Settings
+                      Kurslarim
                     </a>
                   </li>
                   <li>
                     <a className="dropdown-item" href="#">
-                      Billing
+                      To'lovlar
                     </a>
                   </li>
                   <li>
-                    <button className="dropdown-item" onClick={handleLogout}>
+                    <button className="dropdown-item" onClick={() => logOut()}>
                       <svg
                         stroke="currentColor"
                         fill="currentColor"
