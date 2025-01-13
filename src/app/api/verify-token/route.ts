@@ -6,8 +6,8 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET || "your_default_secret";
 
-export async function GET({ request }: { request: Request }) {
-  const url = new URL(request.url);
+export async function GET(req: Request) {
+  const url = new URL(req.url);
   const token = url.searchParams.get("token");
 
   if (!token) {
