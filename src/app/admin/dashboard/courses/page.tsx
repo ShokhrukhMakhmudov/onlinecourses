@@ -27,7 +27,7 @@ export default function page() {
     getCourses();
   }, []);
   return (
-    <div className="bg-white p-4">
+    <div className="bg-white p-4 h-full overflow-y-hidden flex flex-col">
       <div className="flex items-center justify-between border-b-2 border-gray-300 pb-4 mb-5">
         <h2 className="text-xl font-semibold">
           Kurslar
@@ -40,7 +40,7 @@ export default function page() {
           Kurs qo`shish
         </Link>
       </div>
-      <div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 h-full overflow-y-auto pb-2 vertical-scrollbar rounded-scrollbar">
         {courses &&
           courses.map(
             ({
@@ -51,16 +51,17 @@ export default function page() {
               newPrice,
               cover,
               language,
+              duration,
               status,
             }) => (
-              <div key={_id as string} className="card sm:max-w-sm">
+              <div key={_id as string} className="card sm:max-w-sm h-fit">
                 <figure>
                   <img width={384} height={216} src={cover} alt="Watch" />
                 </figure>
-                <div className="card-body p-4">
+                <div className="card-body p-4 gap-2">
                   <h5 className="card-title mb-2.5">{title}</h5>
                   <p className="mb-2">Ustoz: {author}</p>
-                  <div className="w-full flex items-center justify-between mb-2">
+                  <div className="w-full flex items-center justify-between">
                     <p>Kurs tili: {language}</p>
                     <p>
                       Holati:{" "}
@@ -75,7 +76,10 @@ export default function page() {
                       )}
                     </p>
                   </div>
-                  <div className="w-full flex items-center justify-between mb-2">
+                  <div>
+                    <p>Davomiyligi: ~{duration} soat</p>
+                  </div>
+                  <div className="w-full flex items-center justify-between">
                     <p>
                       Narxi: <br />
                       {price.toLocaleString("uz", {
@@ -104,7 +108,7 @@ export default function page() {
                     </Link>
 
                     <Link
-                      href="#"
+                      href={`/admin/dashboard/courses/lessons/${_id}`}
                       className="w-[48%] btn btn-secondary btn-soft">
                       <span className="icon-[tabler--video]" />
                       Darslar
@@ -114,6 +118,7 @@ export default function page() {
               </div>
             )
           )}
+
         {/* <div className="card sm:max-w-sm">
           <figure>
             <img

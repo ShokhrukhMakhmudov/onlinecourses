@@ -1,4 +1,4 @@
-import { Document } from "mongoose";
+import { Document, Schema } from "mongoose";
 
 export interface IUser extends Document {
   fullName: string;
@@ -12,16 +12,25 @@ export interface IUser extends Document {
   isVerified: boolean;
   createdAt: Date;
 }
-
+export interface ILesson {
+  _id: typeof Schema.ObjectId;
+  courseId: string;
+  title: string;
+  description: string;
+  videoPath: string;
+  order?: number;
+}
 export interface ICourse extends Document {
   title: string;
   author: string;
   description: string;
+  duration: number;
   price: number;
   newPrice: number | "";
   language: "uz" | "ru" | "en";
   cover: string;
   status: boolean;
+  lessons: [ILesson];
 }
 export interface IAdmin extends Document {
   email: string;

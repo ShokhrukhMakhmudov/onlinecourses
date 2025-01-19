@@ -13,10 +13,12 @@ interface IFormData {
   title: string;
   author: string;
   description: string;
+  duration: string;
   price: number | "";
   newPrice: number | "";
   language: "O'zbek" | "Русский" | "English";
   cover: string;
+  status: boolean;
 }
 export default function page({ params: { id } }: { params: { id: string } }) {
   const [formData, setFormData] = useState<IFormData>({
@@ -25,8 +27,10 @@ export default function page({ params: { id } }: { params: { id: string } }) {
     description: "",
     price: "",
     newPrice: "",
+    duration: "",
     language: "O'zbek",
     cover: "",
+    status: true,
   });
 
   const [fileLoading, setFileLoading] = useState(false);
@@ -64,7 +68,7 @@ export default function page({ params: { id } }: { params: { id: string } }) {
       const res = await req.json();
 
       if (res?.success) {
-        alert("Kurs muvaffaqiyatli yaratildi");
+        alert("Kurs muvaffaqiyatli o'zgartirildi!");
       }
     } catch (error) {
       console.log(error);
@@ -84,6 +88,14 @@ export default function page({ params: { id } }: { params: { id: string } }) {
 
     if (type === "number" && value !== "") {
       setFormData((prev) => ({ ...prev, [name]: Number(value) }));
+      return;
+    }
+
+    if (type === "checkbox") {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: (e.target as HTMLInputElement).checked,
+      }));
       return;
     }
 
@@ -243,7 +255,7 @@ export default function page({ params: { id } }: { params: { id: string } }) {
                 Kurs tili:
               </label>
               <select
-                className="select"
+                className="select mb-4"
                 id="language"
                 name="language"
                 aria-label="Select Country"
@@ -254,13 +266,50 @@ export default function page({ params: { id } }: { params: { id: string } }) {
                 <option value="Русский">Русский</option>
                 <option value="English">English</option>
               </select>
+              <label className="label label-text" htmlFor="duration">
+                Kurs davomiyligi(soatda):
+              </label>
+              <div className="input-group mb-4">
+                <input
+                  id="duration"
+                  type="number"
+                  name="duration"
+                  className="input "
+                  value={formData.duration}
+                  onChange={handleChange}
+                  placeholder="72 soat"
+                  required
+                />
+              </div>
+              <div>
+                <div className="flex items-center gap-3">
+                  <label className="label text-base" htmlFor="status">
+                    Kurs holati:
+                  </label>
+                  <input
+                    type="checkbox"
+                    id="status"
+                    name="status"
+                    checked={formData.status}
+                    onChange={handleChange}
+                    className="switch switch-primary"
+                  />
+                  {formData.status ? (
+                    <span className="badge badge-soft badge-success ">
+                      Faol
+                    </span>
+                  ) : (
+                    <span className="badge badge-soft badge-error ">
+                      Faol emas
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2"></div>
           <div className="w-full h-full flex flex-col overflow-y-auto">
-            <label className="label label-text" htmlFor="userBio">
-              Kurs haqida
-            </label>
+            <label className="label label-text">Kurs haqida</label>
             <div className="flex-grow-[1] border-2 border-slate-300 flex flex-col">
               <MemoEditor
                 handleDescChange={handleDescChange}
@@ -274,7 +323,7 @@ export default function page({ params: { id } }: { params: { id: string } }) {
               type="submit"
               name="submitButton"
               className="btn btn-primary">
-              Qo'shish
+              O'zgartirish
             </button>
           </div>
         </form>

@@ -1,5 +1,5 @@
-import { IUser, IAdmin, ICourse } from "@/types";
-import { Schema, model, models } from "mongoose";
+import { IUser, IAdmin, ICourse, ILesson } from "@/types";
+import mongoose, { Schema, model, models } from "mongoose";
 
 const UserSchema = new Schema<IUser>(
   {
@@ -26,6 +26,7 @@ const CourseSchema = new Schema<ICourse>({
   title: { type: String, required: true },
   author: { type: String, required: true },
   description: { type: String, required: true },
+  duration: { type: Number, required: true },
   price: { type: Number, required: true },
   newPrice: { type: Number },
   language: {
@@ -37,8 +38,18 @@ const CourseSchema = new Schema<ICourse>({
   status: { type: Boolean, default: false },
 });
 
+const LessonSchema = new Schema<ILesson>({
+  courseId: { type: String, ref: "Course", required: true },
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  videoPath: { type: String, required: true },
+  order: { type: Number, default: 100 },
+});
+
 export const User = models.User || model<IUser>("User", UserSchema);
 
 export const Admin = models.Admin || model<IAdmin>("Admin", AdminSchema);
 
 export const Course = models.Course || model<IUser>("Course", CourseSchema);
+
+export const Lesson = models.Lesson || model<ILesson>("Lesson", LessonSchema);

@@ -2,12 +2,13 @@
 import CourseItem from "@/components/Courses/CourseItem";
 import Loader from "@/components/Loader";
 import { useUserStatus } from "@/context/UserContext";
-import { ICourse } from "@/types";
+import { ICourse, IUser } from "@/types";
 import React, { useEffect, useState } from "react";
 
 export default function page() {
   const {
     userStatus: { userData },
+    deleteFromCart,
   } = useUserStatus();
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [loading, setLoading] = useState(false);
@@ -39,6 +40,42 @@ export default function page() {
     fetchCourses();
   }, [userData, userData?.cart.length]);
 
+  const sendTelegramMessage = async (data: IUser, course: ICourse) => {
+    const text = `
+      Kurs sotib olish \nIsmi: ${data.fullName} \nTelefon: ${
+      data.phoneNumber
+    }\nE-mail: ${data.email}\nKurs nomi: ${course.title}\nKurs narxi: ${
+      course?.newPrice ?? course.price
+    } so'm
+    `;
+
+    const botToken = "7067213755:AAGn3XhFbUX7ZsHcQznhyziDX7aTG99YJh4";
+    const chatId = "-1002263824706";
+    setLoading(true);
+    const req = await fetch(
+      `https://api.telegram.org/bot${botToken}/sendMessage`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          chat_id: chatId,
+          text,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const res = await req.json();
+
+    if (res.ok) {
+      deleteFromCart(course._id as string);
+      alert("Kurs sotib olish uchun so'rov jo'natildi");
+    }
+
+    setLoading(false);
+  };
+
   if (loading) return <Loader />;
 
   return (
@@ -46,9 +83,17 @@ export default function page() {
       <div className="container">
         <h1 className="text-2xl font-semibold mb-10">Savatdagi kurslar</h1>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 place-items-center">
-          {courses.map((item) => (
-            <CourseItem data={item} key={item._id as string} />
-          ))}
+          {userData &&
+            courses.map((item) => (
+              <div className="flex flex-col gap-2" key={item._id as string}>
+                <CourseItem data={item} />
+                <button
+                  className="btn btn-primary rounded-t-none"
+                  onClick={() => sendTelegramMessage(userData, item)}>
+                  Sotib olish
+                </button>
+              </div>
+            ))}
         </div>
       </div>
     </main>

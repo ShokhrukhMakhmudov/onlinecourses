@@ -53,4 +53,16 @@ main {
   .fileUploadInput:hover > label {
     display: flex;
   }
+  li {
+    transition: transform 0.2s, background-color 0.2s;
+  }
+
+  li:active {
+    transform: scale(1.01);
+    background-color: #e2e8f0;
+  }
+
+  li.dragging {
+    opacity: 0.5;
+  }
 }

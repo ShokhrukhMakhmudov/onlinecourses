@@ -17,17 +17,17 @@ const HeroSection = () => {
 
   const banners: Banner[] = [
     {
-      imageUrl: "/1.png",
+      imageUrl: "/6.png",
       link: "#",
       title: "Banner 1",
     },
     {
-      imageUrl: "/2.png",
+      imageUrl: "/4.png",
       link: "#",
       title: "Banner 2",
     },
     {
-      imageUrl: "/3.png",
+      imageUrl: "/5.png",
       link: "#",
       title: "Banner 3",
     },
@@ -55,7 +55,7 @@ const HeroSection = () => {
                 <img
                   src={banner.imageUrl}
                   alt={banner.title}
-                  className="w-full object-cover object-center h-full max-h-[400px]"
+                  className="w-full object-cover object-center h-full max-h-[50%]"
                 />
               </Link>
             </SwiperSlide>

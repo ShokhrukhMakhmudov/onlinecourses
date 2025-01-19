@@ -1,25 +1,39 @@
-"use client"; // only in App Router
+"use client";
 
 import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
+import { useEffect, useState, useRef } from "react";
 
 const Editor = ({
   handleDescChange,
-  description = "<p>Kurs haqida ma`lumot!</p>",
+  description = "",
 }: {
   handleDescChange: (value: string) => void;
   description: string;
 }) => {
+  const [editorData, setEditorData] = useState("<p>Qo'shimcha ma`lumot!</p>");
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    isMounted.current = true;
+    if (description && isMounted.current) {
+      setEditorData(description);
+    }
+    return () => {
+      isMounted.current = false;
+    };
+  }, [description]);
+
   const cloud = useCKEditorCloud({
     version: "44.1.0",
     premium: false,
   });
 
   if (cloud.status === "error") {
-    return <div>Error!</div>;
+    return <div>Error loading CKEditor!</div>;
   }
 
   if (cloud.status === "loading") {
-    return <div>Loading...</div>;
+    return <div>Loading CKEditor...</div>;
   }
 
   const {
@@ -49,16 +63,18 @@ const Editor = ({
     List,
     ListProperties,
     AutoImage,
-    ImageStyle, // Make sure ImageStyle is included
+    ImageStyle,
   } = cloud.CKEditor;
 
   return (
     <CKEditor
       editor={ClassicEditor}
-      data={description}
+      data={editorData}
       onChange={(e, editor) => {
-        const data = editor.getData();
-        handleDescChange(data);
+        if (isMounted.current) {
+          const data = editor.getData();
+          handleDescChange(data);
+        }
       }}
       config={{
         licenseKey: process.env.NEXT_PUBLIC_CKEDITOR_KEY as string,
@@ -71,8 +87,6 @@ const Editor = ({
           FontColor,
           Heading,
           BlockQuote,
-          Bold,
-          Italic,
           Font,
           Link,
           List,
@@ -91,7 +105,7 @@ const Editor = ({
           AutoImage,
           Alignment,
           Table,
-          ImageStyle, // Add ImageStyle plugin
+          ImageStyle,
         ],
         toolbar: [
           "bold",
@@ -112,10 +126,10 @@ const Editor = ({
         ],
         image: {
           toolbar: [
-            "ImageStyle:alignLeft", // Align left button
-            "ImageStyle:alignCenter", // Align center button
-            "ImageStyle:alignRight", // Align right button
-            "ImageStyle:inline", // Inline button
+            "ImageStyle:alignLeft",
+            "ImageStyle:alignCenter",
+            "ImageStyle:alignRight",
+            "ImageStyle:inline",
           ],
           insert: {
             type: "auto",
