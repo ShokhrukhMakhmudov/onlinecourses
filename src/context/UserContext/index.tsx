@@ -3,23 +3,25 @@ import { createContext, ReactNode, useContext, useState } from "react";
 
 interface IUserStatus {
   login: boolean;
-  userData: IUser | null;
+  userData: Omit<IUser, "password"> | null;
 }
 
 interface IUserContext {
   userStatus: IUserStatus;
   login: (userData: IUser, token: string) => void;
   logOut: () => void;
-  addToCart: (id: string) => void;
-  deleteFromCart: (id: string) => void;
+  addToCart: (id: string) => Promise<{ message: string; success: boolean }>;
+  deleteFromCart: (
+    id: string
+  ) => Promise<{ message: string; success: boolean }>;
 }
 
 export const UserContext = createContext<IUserContext>({
   userStatus: { login: false, userData: null },
   login: () => {},
   logOut: () => {},
-  addToCart: () => {},
-  deleteFromCart: () => {},
+  addToCart: () => Promise.resolve({ message: "", success: false }),
+  deleteFromCart: () => Promise.resolve({ message: "", success: false }),
 });
 
 export function UserProvider({ children }: { children: ReactNode }) {
@@ -30,6 +32,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   const login = (userData: IUser, token: string) => {
     sessionStorage.setItem("userToken", token);
+    delete (userData as { password?: string }).password;
     setUserStatus({ login: true, userData });
   };
   const logOut = () => {
@@ -53,11 +56,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
       if (req.status === 200) {
         setUserStatus((prev) => ({ ...prev, userData: res.user }));
-        alert(res.message);
+        return { message: res.message as string, success: true };
       } else {
-        alert(res.message);
+        return { message: res.message as string, success: false };
       }
-    } catch (error) {}
+    } catch (error) {
+      return { message: "Xatolik yuz berdi!", success: false };
+    }
   };
 
   const deleteFromCart = async (id: string) => {
@@ -77,12 +82,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
       if (req.status === 200) {
         setUserStatus((prev) => ({ ...prev, userData: res.user }));
-        alert(res.message);
+        return { message: res.message as string, success: true };
       } else {
-        alert(res.message);
+        return { message: res.message as string, success: false };
       }
     } catch (error) {
       console.log(error);
+      return { message: "Xatolik yuz berdi!", success: false };
     }
   };
   return (

@@ -4,6 +4,7 @@ import Loader from "@/components/Loader";
 import { useUserStatus } from "@/context/UserContext";
 import { ICourse, IUser } from "@/types";
 import React, { useEffect, useState } from "react";
+import { sendTelegramMessage } from "../../../../utils/queries";
 
 export default function page() {
   const {
@@ -40,42 +41,23 @@ export default function page() {
     fetchCourses();
   }, [userData, userData?.cart.length]);
 
-  const sendTelegramMessage = async (data: IUser, course: ICourse) => {
-    const text = `
-      Kurs sotib olish \nIsmi: ${data.fullName} \nTelefon: ${
-      data.phoneNumber
-    }\nE-mail: ${data.email}\nKurs nomi: ${course.title}\nKurs narxi: ${
-      course?.newPrice ?? course.price
-    } so'm
-    `;
-
-    const botToken = "7067213755:AAGn3XhFbUX7ZsHcQznhyziDX7aTG99YJh4";
-    const chatId = "-1002263824706";
+  const sendMessage = async (
+    data: Omit<IUser, "password">,
+    course: ICourse
+  ) => {
     setLoading(true);
-    const req = await fetch(
-      `https://api.telegram.org/bot${botToken}/sendMessage`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          chat_id: chatId,
-          text,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
 
-    const res = await req.json();
+    const res = await sendTelegramMessage(data, course);
 
-    if (res.ok) {
+    if (res.success) {
       deleteFromCart(course._id as string);
       alert("Kurs sotib olish uchun so'rov jo'natildi");
+    } else {
+      alert("Xatolik yuz berdi! Qayta urinib ko'ring");
     }
 
     setLoading(false);
   };
-
   if (loading) return <Loader />;
 
   return (
@@ -89,8 +71,8 @@ export default function page() {
                 <CourseItem data={item} />
                 <button
                   className="btn btn-primary rounded-t-none"
-                  onClick={() => sendTelegramMessage(userData, item)}>
-                  Sotib olish
+                  onClick={() => sendMessage(userData, item)}>
+                  Xarid qilish
                 </button>
               </div>
             ))}

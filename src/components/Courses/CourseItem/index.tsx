@@ -1,6 +1,7 @@
 import { ICourse } from "@/types";
 import React from "react";
 import CartBtn from "../CartBtn";
+import Link from "next/link";
 
 export default function CourseItem({
   data: { _id, title, author, price, newPrice, cover, language, duration },
@@ -13,7 +14,11 @@ export default function CourseItem({
         <img width={384} height={216} src={cover} alt="Watch" />
       </figure>
       <div className="card-body p-4">
-        <h5 className="card-title font-normal text-primary mb-2">{title}</h5>
+        <Link
+          href={`/course/${_id as string}`}
+          className="card-title font-normal text-primary mb-2">
+          {title}
+        </Link>
         <p className="mb-2"> {author}</p>
 
         <div className="flex items-center justify-between">

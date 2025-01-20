@@ -28,12 +28,13 @@ export default function Header() {
 
         const data = await response.json();
         if (response.status === 200) {
-          login(data.user, token as string);
+          login(data.user, data.token);
         } else {
           throw new Error(data.message);
         }
       } catch (error) {
         logOut();
+        window.location.href = "/";
       } finally {
         setLoading(false);
       }
@@ -148,9 +149,9 @@ export default function Header() {
                     </div>
                   </li>
                   <li>
-                    <a className="dropdown-item" href="#">
+                    <Link href="/profile" className="dropdown-item">
                       Shaxsiy kabinet
-                    </a>
+                    </Link>
                   </li>
                   <li>
                     <a className="dropdown-item" href="#">
@@ -163,7 +164,12 @@ export default function Header() {
                     </a>
                   </li>
                   <li>
-                    <button className="dropdown-item" onClick={() => logOut()}>
+                    <button
+                      className="dropdown-item"
+                      onClick={() => {
+                        logOut();
+                        window.location.href = "/";
+                      }}>
                       <svg
                         stroke="currentColor"
                         fill="currentColor"

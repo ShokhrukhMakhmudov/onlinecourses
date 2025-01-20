@@ -21,9 +21,16 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+
+    const newToken = jwt.sign(
+      { userId: user._id.toString() },
+      process.env.JWT_SECRET as string,
+      { expiresIn: "4h" }
+    );
     return NextResponse.json(
       {
         user,
+        token: newToken,
         success: true,
       },
       { status: 200 }

@@ -1,3 +1,4 @@
+import { ICourse, IUser } from "@/types";
 import { unstable_cache } from "next/cache";
 
 export const AddToCart = async ({
@@ -62,4 +63,42 @@ export const checkUserToken = async (token: string) => {
       message: error,
     };
   }
+};
+
+export const sendTelegramMessage = async (
+  data: Omit<IUser, "password">,
+  course: ICourse
+) => {
+  const text = `
+      Kurs sotib olish \nIsmi: ${data.fullName} \nTelefon: ${
+    data.phoneNumber
+  }\nE-mail: ${data.email}\nKurs nomi: ${course.title}\nKurs narxi: ${
+    course?.newPrice ?? course.price
+  } so'm
+    `;
+
+  const botToken = "7067213755:AAGn3XhFbUX7ZsHcQznhyziDX7aTG99YJh4";
+  const chatId = "-1002263824706";
+
+  const req = await fetch(
+    `https://api.telegram.org/bot${botToken}/sendMessage`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        chat_id: chatId,
+        text,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  const res = await req.json();
+
+  if (res.ok) {
+    return { success: true, message: res.message };
+  }
+
+  return { success: false, message: res.message };
 };

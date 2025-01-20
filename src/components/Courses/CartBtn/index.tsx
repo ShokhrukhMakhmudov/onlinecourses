@@ -1,4 +1,5 @@
 "use client";
+import Loader from "@/components/Loader";
 import { useModal } from "@/context/AuthModalContext";
 import { useUserStatus } from "@/context/UserContext";
 import { useState } from "react";
@@ -11,15 +12,26 @@ export default function CartBtn({ id }: { id: string }) {
   } = useUserStatus();
   const { openModal } = useModal();
   const [hover, setHover] = useState(false);
+  const [loading, setLoading] = useState(false);
   const handleAddToCart = async () => {
     if (!login) {
       openModal();
       return;
     }
-
-    addToCart(id);
+    setLoading(true);
+    const req = await addToCart(id);
+    if (req.success) alert(req.message);
+    setLoading(false);
   };
 
+  const handleDeleteFromCart = async (id: string) => {
+    setLoading(true);
+    const req = await deleteFromCart(id);
+    if (req.success) alert(req.message);
+    setLoading(false);
+  };
+
+  if (loading) return <Loader />;
   return (
     <>
       {userData?.cart.includes(id) ? (
@@ -29,7 +41,7 @@ export default function CartBtn({ id }: { id: string }) {
             className="tooltip-toggle btn btn-primary"
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
-            onClick={() => deleteFromCart(id)}>
+            onClick={() => handleDeleteFromCart(id)}>
             Savatda
           </button>
           {hover && (

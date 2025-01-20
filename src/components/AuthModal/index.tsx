@@ -118,6 +118,7 @@ export default function AuthModal() {
       });
 
       loginStatus(data.user, data.token);
+      closeModal();
     } else {
       setLogin((prev) => ({
         ...prev,
@@ -129,7 +130,6 @@ export default function AuthModal() {
     }
 
     setLoading(false);
-    closeModal();
   };
   return (
     <>
