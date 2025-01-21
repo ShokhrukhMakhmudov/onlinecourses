@@ -34,7 +34,7 @@ export default function CartBtn({ id }: { id: string }) {
   if (loading) return <Loader />;
   return (
     <>
-      {userData?.cart.includes(id) ? (
+      {(userData?.cart as string[])?.includes(id) ? (
         <div className="tooltip show relative">
           <button
             type="button"

@@ -1,6 +1,7 @@
 "use client";
 import Loader from "@/components/Loader";
 import UserDeleteModal from "@/components/Modals/UserDeleteModal";
+import UserItem from "@/components/UserItem";
 import { IUser } from "@/types";
 import { useEffect, useState } from "react";
 
@@ -59,50 +60,19 @@ export default function Users() {
                 <tr>
                   <th>Ism</th>
                   <th>Email</th>
+                  <th>Telefon raqam</th>
                   <th>Holat</th>
-                  <th>Tu'gilgan sana</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody className="h-full overflow-y-scroll">
                 {users ? (
                   users.map((user) => (
-                    <tr key={user._id as string}>
-                      <td className="text-nowrap">{user.fullName}</td>
-                      <td>{user.email}</td>
-                      <td>
-                        {user.isVerified ? (
-                          <span className="badge badge-soft badge-success ">
-                            Tasdiqlangan
-                          </span>
-                        ) : (
-                          <span className="badge badge-soft badge-error ">
-                            Tasdiqlanmagan
-                          </span>
-                        )}
-                      </td>
-                      <td className="text-nowrap">
-                        {new Date(user.createdAt).toLocaleDateString("uz", {
-                          day: "2-digit",
-                          month: "long",
-                          year: "numeric",
-                        })}
-                      </td>
-                      <td className="flex items-center">
-                        <button
-                          className="btn btn-circle btn-text btn-sm"
-                          aria-label="Action button">
-                          <span className="icon-[tabler--pencil] size-5" />
-                        </button>
-
-                        <button
-                          className="btn btn-square btn-text btn-sm"
-                          type="button"
-                          onClick={() => openDeleteModal(user)}>
-                          <span className="icon-[tabler--trash] size-5" />
-                        </button>
-                      </td>
-                    </tr>
+                    <UserItem
+                      key={user._id as string}
+                      user={user}
+                      openDeleteModal={openDeleteModal}
+                    />
                   ))
                 ) : (
                   <tr>

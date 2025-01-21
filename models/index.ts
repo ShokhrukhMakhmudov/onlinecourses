@@ -1,5 +1,5 @@
 import { IUser, IAdmin, ICourse, ILesson } from "@/types";
-import mongoose, { Schema, model, models } from "mongoose";
+import { Schema, model, models } from "mongoose";
 
 const UserSchema = new Schema<IUser>(
   {
@@ -9,8 +9,10 @@ const UserSchema = new Schema<IUser>(
     phoneNumber: { type: String, required: true },
     dateOfBirth: { type: Date, required: true },
     gender: { type: String, enum: ["male", "female"], required: true },
-    purchasedCourses: { type: [String], default: [] },
-    cart: { type: [String], default: [], ref: "Course" },
+    cart: [{ type: Schema.Types.ObjectId, ref: "Course", default: [] }],
+    purchasedCourses: [
+      { type: Schema.Types.ObjectId, ref: "Course", default: [] },
+    ],
     isVerified: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
   },

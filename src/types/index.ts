@@ -7,11 +7,12 @@ export interface IUser extends Document {
   phoneNumber: string;
   dateOfBirth: Date;
   gender: "male" | "female";
-  purchasedCourses: string[];
-  cart: string[];
+  purchasedCourses: ICourse[] | [];
+  cart: ICourse[] | [];
   isVerified: boolean;
   createdAt: Date;
 }
+
 export interface ILesson {
   _id: typeof Schema.ObjectId;
   courseId: string;

@@ -24,7 +24,8 @@ export async function DELETE(req: Request) {
       );
     }
 
-    user.cart = user.cart.filter((id: string) => id !== courseId);
+    user.cart = user.cart.filter((id: string) => id.toString() !== courseId);
+
     await user.save();
 
     return NextResponse.json(

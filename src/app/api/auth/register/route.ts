@@ -53,7 +53,7 @@ export async function POST(req: Request) {
       subject: "E-mailni tasdiqlash",
       html: `<h2>Assalomu alaykum, ${newUser.fullName}!</h2>
                  <p>E-mailingizni tasdiqlash uchun linkni bosing:</p>
-                 <a href="${process.env.BASE_URL}/auth?token=${token}">Tasdiqlash</a>`,
+                 <a href="${process.env.NEXT_PUBLIC_BASE_URL}/auth?token=${token}">Tasdiqlash</a>`,
     };
 
     await transporter.sendMail(mailOptions);

@@ -10,7 +10,10 @@ export async function GET(req: Request) {
 
   try {
     if (id) {
-      const user = await User.findById(id);
+      const user = await User.findById(id)
+        .populate("purchasedCourses")
+        .populate("cart");
+
       return NextResponse.json(user, { status: 200 });
     }
 

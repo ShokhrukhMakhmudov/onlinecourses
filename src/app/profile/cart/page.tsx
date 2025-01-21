@@ -13,6 +13,7 @@ export default function page() {
   } = useUserStatus();
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [loading, setLoading] = useState(false);
+  console.log(userData);
 
   useEffect(() => {
     async function fetchCourses() {

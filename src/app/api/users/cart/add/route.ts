@@ -25,6 +25,7 @@ export async function POST(req: Request) {
     }
 
     user.cart.push(courseId);
+
     await user.save();
 
     return NextResponse.json(

@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-
+const { addDynamicIconSelectors } = require("@iconify/tailwind");
 const config: Config = {
   content: [
     "./node_modules/flyonui/dist/js/*.js",
@@ -15,7 +15,11 @@ const config: Config = {
       },
     },
   },
-  plugins: [require("flyonui"), require("flyonui/plugin")],
+  plugins: [
+    require("flyonui"),
+    require("flyonui/plugin"),
+    addDynamicIconSelectors(),
+  ],
   flyonui: {
     themes: ["corporate"],
   },
