@@ -1,5 +1,6 @@
 "use client";
 import AddCourseModal from "@/components/Modals/AddCourseModal";
+import DeleteCourseModal from "@/components/Modals/DeleteCourseModal";
 import { IUser } from "@/types";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -18,6 +19,18 @@ export default function page({
     userId: null,
   });
 
+  const [deleteCourseModal, setDeleteCourseModal] = useState<{
+    isOpen: boolean;
+    userId: string | null;
+    courseId: string | null;
+    userName: string | null;
+  }>({
+    isOpen: false,
+    userId: null,
+    courseId: null,
+    userName: null,
+  });
+
   const openAddCourseModal = (userId: string) => {
     setAddCourseModal({
       isOpen: true,
@@ -29,6 +42,27 @@ export default function page({
     setAddCourseModal({
       isOpen: false,
       userId: null,
+    });
+  };
+  const openDeleteCourseModal = (
+    userId: string,
+    courseId: string,
+    userName: string
+  ) => {
+    setDeleteCourseModal({
+      isOpen: true,
+      userId,
+      courseId,
+      userName,
+    });
+  };
+
+  const closeDeleteCourseModal = () => {
+    setDeleteCourseModal({
+      isOpen: false,
+      userId: null,
+      courseId: null,
+      userName: null,
     });
   };
   useEffect(() => {
@@ -92,8 +126,10 @@ export default function page({
                           alt="Kurs rasmi"
                         />
                       </figure>
-                      <div className="card-body p-4 gap-2">
-                        <h5 className="card-title mb-2.5">{title}</h5>
+                      <div className="card-body p-4 gap-2 relative">
+                        <h5 className="card-title mb-2.5">
+                          {title} asdasd asd asd asd asd as
+                        </h5>
                         <p className="mb-2">Ustoz: {author}</p>
                         <div className="w-full flex items-center justify-between">
                           <p>Kurs tili: {language}</p>
@@ -139,14 +175,25 @@ export default function page({
                             <span className="icon-[tabler--pencil]" />
                             Tahrirlash
                           </Link>
-
-                          <Link
-                            href={`/admin/dashboard/courses/lessons/${_id}`}
-                            className="w-[48%] btn btn-secondary btn-soft">
-                            <span className="icon-[tabler--video]" />
-                            Darslar
-                          </Link>
+                          <button
+                            className="btn btn-error w-[48%]"
+                            onClick={() =>
+                              openDeleteCourseModal(
+                                user?._id as string,
+                                _id as string,
+                                user.fullName
+                              )
+                            }>
+                            <span className="icon-[tabler--trash]" />
+                            O'chirish
+                          </button>
                         </div>
+                        <Link
+                          href={`/admin/dashboard/courses/lessons/${_id}`}
+                          className=" btn btn-secondary btn-soft">
+                          <span className="icon-[tabler--video]" />
+                          Darslar
+                        </Link>
                       </div>
                     </div>
                   )
@@ -257,6 +304,16 @@ export default function page({
         <AddCourseModal
           userId={addCourseModal.userId}
           close={closeAddCourseModal}
+        />
+      )}
+      {deleteCourseModal.isOpen && (
+        <DeleteCourseModal
+          data={{
+            userId: deleteCourseModal.userId,
+            courseId: deleteCourseModal.courseId,
+            userName: user?.fullName,
+          }}
+          close={closeDeleteCourseModal}
         />
       )}
     </>

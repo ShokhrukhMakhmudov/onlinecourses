@@ -1,6 +1,7 @@
 "use client";
+import Loader from "@/components/Loader";
 import { ICourse } from "@/types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 
 export default function AddCourseModal({
   close,
@@ -11,6 +12,12 @@ export default function AddCourseModal({
 }) {
   const [loading, setLoading] = useState<boolean>(false);
   const [courses, setCourses] = useState<ICourse[] | []>([]);
+  const [selectedCourse, setSelectedCourse] = useState<ICourse | null>(null);
+  const [error, setError] = useState<{ message: string; status: boolean }>({
+    message: "",
+    status: false,
+  });
+
   useEffect(() => {
     async function fetchCourses() {
       try {
@@ -25,6 +32,50 @@ export default function AddCourseModal({
 
     fetchCourses();
   }, [userId]);
+
+  const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = e.target.value;
+    const selectedCourse = courses.find(
+      (course) => course._id === selectedValue
+    );
+    if (!selectedCourse) return;
+
+    if (error.status) {
+      setError({ message: "", status: false });
+    }
+
+    setSelectedCourse(selectedCourse);
+  };
+
+  const handleAddtoPurchase = async () => {
+    if (!selectedCourse) {
+      setError({ message: "Kursni tanlang!", status: true });
+      return;
+    }
+    setLoading(true);
+    try {
+      const req = await fetch(`/api/users/purchase/add`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: userId, courseId: selectedCourse._id }),
+      });
+      const res = await req.json();
+      if (req.status === 200) {
+        alert(res.message);
+      } else {
+        alert(res.message);
+      }
+    } catch (error) {
+      alert((error as Error).message || "Xatolik yuz berdi");
+    }
+
+    setLoading(false);
+    close();
+    window.location.reload();
+  };
+
+  if (loading) return <Loader />;
+
   return (
     <>
       <div
@@ -36,11 +87,21 @@ export default function AddCourseModal({
               <h3 className="modal-title">Kurs qo'shish</h3>
             </div>
             <div className="modal-body">
-              <div className="w-96">
-                <label className="label label-text" htmlFor="favorite-simpson">
+              <div>
+                <label
+                  className="label label-text text-lg"
+                  htmlFor="favorite-simpson">
                   Kursni tanlang:
                 </label>
-                <select className="select" id="favorite-simpson">
+                <select
+                  className="select w-full text-lg mb-2"
+                  id="favorite-simpson"
+                  onChange={handleSelectChange}
+                  value={(selectedCourse?._id || "") as string}
+                  required>
+                  <option value="" disabled>
+                    Kursni tanlang
+                  </option>
                   {courses.map((course) => (
                     <option
                       key={course._id as string}
@@ -49,12 +110,49 @@ export default function AddCourseModal({
                     </option>
                   ))}
                 </select>
+                {error.status && (
+                  <p className="text-white px-4 py-2 bg-error">
+                    {error?.message || "Xatolik yuz berdi!"}
+                  </p>
+                )}
+                <label className="label label-text text-lg">
+                  Tanlangan kurs:
+                </label>
+                {selectedCourse && (
+                  <>
+                    <figure className="relative">
+                      <img
+                        width={"100%"}
+                        height={"auto"}
+                        src={selectedCourse.cover}
+                        alt="Kurs rasmi"
+                      />
+                      <div className="absolute top-3 right-3">
+                        {selectedCourse.status ? (
+                          <span className="badge badge-success badge-lg">
+                            Faol
+                          </span>
+                        ) : (
+                          <span className="badge badge-error badge-lg">
+                            Faol emas
+                          </span>
+                        )}
+                      </div>
+                    </figure>
+                    <div>
+                      <p className="my-2 text-lg">
+                        Ustoz: {selectedCourse.author}
+                      </p>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
             <div className="modal-footer">
               <button
                 disabled={loading}
                 type="button"
+                onClick={handleAddtoPurchase}
                 className="btn btn-primary">
                 Qo'shish
                 {loading && (
