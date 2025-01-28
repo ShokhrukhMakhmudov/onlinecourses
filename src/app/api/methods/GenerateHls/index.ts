@@ -36,6 +36,8 @@ export default async function generateHLS(
         console.error("Ошибка при генерации HLS-сегментов:", err);
         reject(err);
       })
+      .setFfmpegPath("ffmpeg") // Путь к FFmpeg, если нужно явно указать
+      .addOption("-y") // <--- Флаг перезаписи существующих файлов
       .run();
   });
 }

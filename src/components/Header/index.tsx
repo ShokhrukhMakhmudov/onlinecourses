@@ -154,9 +154,9 @@ export default function Header() {
                     </Link>
                   </li>
                   <li>
-                    <a className="dropdown-item" href="#">
+                    <Link href="/profile/courses" className="dropdown-item">
                       Kurslarim
-                    </a>
+                    </Link>
                   </li>
                   <li>
                     <a className="dropdown-item" href="#">

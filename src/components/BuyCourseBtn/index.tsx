@@ -6,7 +6,7 @@ import { ICourse, IUser } from "@/types";
 import { useUserStatus } from "@/context/UserContext";
 import { useModal } from "@/context/AuthModalContext";
 
-export default function ButCourseBtn({ course }: { course: ICourse }) {
+export default function BuyCourseBtn({ course }: { course: ICourse }) {
   const [loading, setLoading] = useState(false);
   const {
     userStatus: { userData, login },
@@ -38,7 +38,7 @@ export default function ButCourseBtn({ course }: { course: ICourse }) {
   }
   return (
     <button
-      className="btn btn-primary rounded-t-none"
+      className="btn btn-primary rounded-t-none w-full"
       onClick={() =>
         login && userData ? sendMessage(userData, course) : redirectToLogin()
       }>

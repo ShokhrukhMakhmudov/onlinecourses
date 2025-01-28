@@ -3,18 +3,16 @@ import fs from "fs";
 import { NextRequest, NextResponse } from "next/server";
 import generateHLS from "../methods/GenerateHls";
 
-const VIDEO_DIR = path.join(process.cwd(), "public/videos/hls");
-const VIDEO_INPUT_PATH = path.join(process.cwd(), "public/video.mp4"); // Исходное видео
-const OUTPUT_DIR = path.join(process.cwd(), "public/videos/hls"); // Директория для сегментов
-
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const filename = searchParams.get("filename");
+  const id = searchParams.get("id");
   const token = searchParams.get("token");
 
-  if (!filename) {
+  if (!id) {
     return new NextResponse("Filename is required", { status: 400 });
   }
+
+  const VIDEO_DIR = path.join(process.cwd(), `public/videos/hls/${id}`);
 
   const filePath = path.join(VIDEO_DIR, "playlist.m3u8");
   // await generateHLS(VIDEO_INPUT_PATH, OUTPUT_DIR)
@@ -42,7 +40,7 @@ export async function GET(req: NextRequest) {
     "Content-Range": `bytes ${start}-${adjustedEnd}/${fileSize}`,
     "Accept-Ranges": "bytes",
     "Content-Length": chunkSize.toString(),
-    "Content-Type": filename.endsWith(".m3u8")
+    "Content-Type": "playlist.m3u8".endsWith(".m3u8")
       ? "application/vnd.apple.mpegurl"
       : "video/mp2t",
   };
@@ -51,4 +49,37 @@ export async function GET(req: NextRequest) {
     status: 206,
     headers,
   });
+}
+
+export async function POST(req: NextRequest) {
+  const { videoPath, id } = await req.json();
+
+  const VIDEO_DIR = path.join(process.cwd(), `public/videos/hls/${id}`);
+  const VIDEO_INPUT_PATH = path.join(process.cwd(), `public/${videoPath}`); // Исходное видео
+  const OUTPUT_DIR = path.join(process.cwd(), `public/videos/hls/${id}`); // Директория для сегментов
+
+  // Убедитесь, что папка существует перед запуском
+  if (!fs.existsSync(VIDEO_DIR)) {
+    fs.mkdirSync(VIDEO_DIR, { recursive: true });
+  }
+
+  const filePath = path.join(VIDEO_DIR, "playlist.m3u8");
+
+  try {
+    // Запустить процесс генерации HLS
+    await generateHLS(VIDEO_INPUT_PATH, OUTPUT_DIR);
+
+    // Проверить, был ли плейлист успешно сгенерирован
+    if (!fs.existsSync(filePath)) {
+      return new NextResponse("File not found", { status: 404 });
+    }
+
+    return NextResponse.json(
+      { success: true, message: "HLS Generated!" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Ошибка при обработке:", error);
+    return new NextResponse("Error during HLS generation", { status: 500 });
+  }
 }

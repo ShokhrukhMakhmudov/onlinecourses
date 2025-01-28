@@ -1,16 +1,29 @@
 "use client";
-import AddCourseModal from "@/components/Modals/AddCourseModal";
-import DeleteCourseModal from "@/components/Modals/DeleteCourseModal";
-import { IUser } from "@/types";
-import Link from "next/link";
-import { useState, useEffect } from "react";
 
+import { IUser } from "@/types";
+import dynamic from "next/dynamic";
+import Link from "next/link";
+import { useState, useEffect, useMemo } from "react";
+
+const AddCourseModal = dynamic(
+  () => import("@/components/Modals/AddCourseModal"),
+  {
+    ssr: false,
+  }
+);
+const DeleteCourseModal = dynamic(
+  () => import("@/components/Modals/DeleteCourseModal"),
+  {
+    ssr: false,
+  }
+);
 export default function page({
   params: { userId },
 }: {
   params: { userId: string };
 }) {
   const [user, setUser] = useState<IUser | null>(null);
+
   const [addCourseModal, setAddCourseModal] = useState<{
     isOpen: boolean;
     userId: string | null;
@@ -65,6 +78,21 @@ export default function page({
       userName: null,
     });
   };
+
+  const purchasedCourses = useMemo(() => {
+    if (user?.purchasedCourses.length === 0) {
+      return null;
+    }
+    return user?.purchasedCourses;
+  }, [user?.purchasedCourses.length]);
+
+  const cartCourses = useMemo(() => {
+    if (user?.cart.length === 0) {
+      return null;
+    }
+    return user?.cart;
+  }, [user?.cart.length]);
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -104,8 +132,8 @@ export default function page({
               Xarid qilingan kurslar:
             </h2>
             <div className="flex flex-col gap-5 h-full pb-2 pe-4">
-              {!!user?.purchasedCourses.length ? (
-                user.purchasedCourses.map(
+              {purchasedCourses ? (
+                purchasedCourses.map(
                   ({
                     _id,
                     title,
@@ -127,9 +155,7 @@ export default function page({
                         />
                       </figure>
                       <div className="card-body p-4 gap-2 relative">
-                        <h5 className="card-title mb-2.5">
-                          {title} asdasd asd asd asd asd as
-                        </h5>
+                        <h5 className="card-title mb-2.5">{title}</h5>
                         <p className="mb-2">Ustoz: {author}</p>
                         <div className="w-full flex items-center justify-between">
                           <p>Kurs tili: {language}</p>
@@ -181,7 +207,7 @@ export default function page({
                               openDeleteCourseModal(
                                 user?._id as string,
                                 _id as string,
-                                user.fullName
+                                user?.fullName as string
                               )
                             }>
                             <span className="icon-[tabler--trash]" />
@@ -210,8 +236,8 @@ export default function page({
               Savatdagi kurslar:
             </h2>
             <div className="flex flex-col gap-5 h-full pb-2 pe-4">
-              {!!user?.cart.length ? (
-                user.cart.map(
+              {cartCourses ? (
+                cartCourses.map(
                   ({
                     _id,
                     title,

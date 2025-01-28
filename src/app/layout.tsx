@@ -28,6 +28,10 @@ export default function RootLayout({
           href="https://unpkg.com/@videojs/themes@1/dist/city/index.css"
           rel="stylesheet"
         />
+        <link
+          href="https://unpkg.com/@videojs/themes@1/dist/sea/index.css"
+          rel="stylesheet"
+        />
       </head>
       <body className={`${font.className} antialiased`}>
         <UserLayout>{children}</UserLayout>

@@ -1,4 +1,4 @@
-import ButCourseBtn from "@/components/BuyCourseBtn";
+import BuyCourseBtn from "@/components/BuyCourseBtn";
 import CartBtn from "@/components/Courses/CartBtn";
 import { ILesson } from "@/types";
 import { unstable_cache } from "next/cache";
@@ -71,12 +71,12 @@ export default async function page({
   return (
     <section className="py-10">
       <div className="container px-20">
-        <div className="card flex flex-row items-start gap-5 justify-between mb-3">
-          <div className="w-1/3 ">
+        <div className="flex gap-5 justify-between items-center mb-3 shadow-2xl rounded-xl">
+          <div className="w-1/3 h-full">
             <div className="card-header">
               <h1 className="text-3xl font-bold text-primary">{data.title}</h1>
             </div>
-            <div className="card-body gap-3">
+            <div className="card-body gap-3 ">
               <div className="flex items-center gap-2 text-xl text-primary">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -111,7 +111,7 @@ export default async function page({
                   {data.language}
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-xl text-primary">
+              <div className="flex items-center gap-2 text-xl text-primary flex-grow-[1]">
                 <svg
                   stroke="currentColor"
                   fill="currentColor"
@@ -264,8 +264,9 @@ export default async function page({
                   </div>
                 </div>
               </div>
-
-              {data && <ButCourseBtn course={data} />}
+            </div>
+            <div className="card-footer h-full">
+              {data && <BuyCourseBtn course={data} />}
             </div>
           </div>
           <Image

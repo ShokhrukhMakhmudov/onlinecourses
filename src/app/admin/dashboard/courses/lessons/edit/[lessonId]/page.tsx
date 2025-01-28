@@ -1,8 +1,9 @@
 "use client";
 
+import Loader from "@/components/Loader";
 import VideoUpload from "@/components/VideoUpload";
 import dynamic from "next/dynamic";
-import React, { FormEvent, memo, use, useEffect, useState } from "react";
+import React, { FormEvent, memo, useEffect, useState } from "react";
 
 const Editor = dynamic(() => import("@/components/Editor"), {
   ssr: false,
@@ -23,7 +24,7 @@ export default function page({
     description: "Dars to'g'risida ma'lumot",
     videoPath: "",
   });
-  console.log(formData.videoPath);
+  const [loading, setLoading] = useState(true);
   const [videoModal, setVideoModal] = useState({
     isOpen: false,
     videoPath: "",
@@ -39,8 +40,9 @@ export default function page({
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      const req = await fetch(`/api/course/lesson/create`, {
+      const req = await fetch(`/api/course/lesson/update?id=${lessonId}`, {
         method: "POST",
         body: JSON.stringify(formData),
       });
@@ -52,6 +54,7 @@ export default function page({
     } catch (error) {
       alert("Dars yaratishda xatolik yuz berdi!");
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -73,6 +76,7 @@ export default function page({
       }
     }
     getCourses();
+    setLoading(false);
   }, []);
 
   const handleOpenVideoModal = (videoPath: string, title: string) => {
@@ -82,6 +86,8 @@ export default function page({
       title,
     });
   };
+
+  if (loading) return <Loader />;
   return (
     <>
       <div className="bg-white p-4 h-full overflow-y-hidden flex flex-col">

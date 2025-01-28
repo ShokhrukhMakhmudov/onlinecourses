@@ -40,7 +40,7 @@ export default function page() {
           Kurs qo`shish
         </Link>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 h-full overflow-y-auto pb-2 vertical-scrollbar rounded-scrollbar">
+      <div className="grid place-items-center grid-cols-1 lg:grid-cols-2 lg:place-items-start xl:grid-cols-3 2xl:grid-cols-4 gap-4 h-full overflow-y-auto pb-2 vertical-scrollbar rounded-scrollbar">
         {courses &&
           courses.map(
             ({
