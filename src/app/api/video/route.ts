@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
     "Content-Range": `bytes ${start}-${adjustedEnd}/${fileSize}`,
     "Accept-Ranges": "bytes",
     "Content-Length": chunkSize.toString(),
-    "Content-Type": "playlist.m3u8".endsWith(".m3u8")
+    "Content-Type": "playlist.".endsWith(".m3u8")
       ? "application/vnd.apple.mpegurl"
       : "video/mp2t",
   };

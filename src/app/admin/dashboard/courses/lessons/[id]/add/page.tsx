@@ -1,5 +1,7 @@
 "use client";
 
+import Loader from "@/components/Loader";
+import VideoPlayer from "@/components/VideoPlayer";
 import VideoUpload from "@/components/VideoUpload";
 import dynamic from "next/dynamic";
 import React, { FormEvent, memo, useState } from "react";
@@ -19,7 +21,7 @@ export default function page({ params: { id } }: { params: { id: string } }) {
     description: "Dars to'g'risida ma'lumot",
     videoPath: "",
   });
-
+  const [loading, setLoading] = useState<boolean>(false);
   const [videoModal, setVideoModal] = useState({
     isOpen: false,
     videoPath: "",
@@ -35,6 +37,7 @@ export default function page({ params: { id } }: { params: { id: string } }) {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const req = await fetch(`/api/course/lesson/create?id=${id}`, {
         method: "POST",
@@ -48,6 +51,8 @@ export default function page({ params: { id } }: { params: { id: string } }) {
     } catch (error) {
       alert("Dars yaratishda xatolik yuz berdi!");
     }
+
+    setLoading(false);
   };
 
   const handleOpenVideoModal = (videoPath: string, title: string) => {
@@ -58,6 +63,7 @@ export default function page({ params: { id } }: { params: { id: string } }) {
     });
   };
 
+  if (loading) return <Loader />;
   return (
     <>
       <div className="bg-white p-4 h-full overflow-y-hidden flex flex-col">

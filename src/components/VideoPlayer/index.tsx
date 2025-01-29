@@ -18,7 +18,7 @@ const VideoPlayer = ({
   // Функция для получения токена от API
 
   useEffect(() => {
-    const token = sessionStorage.getItem("userToken");
+    const token = sessionStorage?.getItem("userToken") || "asdasdasd";
     setToken(token);
   }, []);
 

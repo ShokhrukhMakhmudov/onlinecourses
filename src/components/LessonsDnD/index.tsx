@@ -90,7 +90,7 @@ const LessonReorder = ({
             <button
               className="btn btn-secondary"
               onClick={() =>
-                handleOpenVideoModal(lesson.videoPath, lesson.title)
+                handleOpenVideoModal(lesson._id.toString(), lesson.title)
               }>
               <span className="icon-[tabler--video]" />
               Video

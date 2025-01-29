@@ -4,7 +4,7 @@
 #EXT-X-MEDIA-SEQUENCE:0
 #EXT-X-PLAYLIST-TYPE:VOD
 #EXTINF:12.000000,
-segment_000.ts
+segment_000.hls
 #EXTINF:1.960000,
-segment_001.ts
+segment_001.hls
 #EXT-X-ENDLIST

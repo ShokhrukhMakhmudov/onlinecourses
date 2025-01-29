@@ -19,7 +19,7 @@ export default async function generateHLS(
         "-sc_threshold 0", // Отключение авторазбиения сегментов
         "-hls_time 10", // Длина сегмента в секундах
         "-hls_playlist_type vod", // Тип плейлиста
-        `-hls_segment_filename ${path.join(outputDir, "segment_%03d.ts")}`, // Шаблон имен сегментов
+        `-hls_segment_filename ${path.join(outputDir, "segment_%03d.hls")}`, // Шаблон имен сегментов
       ])
       .output(path.join(outputDir, "playlist.m3u8")) // Имя плейлиста
       .on("start", (commandLine) => {
